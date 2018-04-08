@@ -10,13 +10,48 @@ package monitorUDP;
  * @author tiagofraga
  */
 public class PDUResponse {
-
-    public PDUResponse(int id, long cpu) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private int id;
+    private long cpu;
+    private long memory;
+    
+    public PDUResponse(int id, long cpu, long memory) {
+        this.id = id;
+        this.cpu = cpu;
+        this.memory = memory;
     }
 
     public String getPDU() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        StringBuilder s = new StringBuilder();
+        s.append(this.id + ";");
+        s.append(this.cpu + ";");
+        s.append(this.memory + ";");
+        return s.toString();
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public long getCpu() {
+        return cpu;
+    }
+
+    public void setCpu(long cpu) {
+        this.cpu = cpu;
+    }
+
+    public long getMemory() {
+        return memory;
+    }
+
+    public void setMemory(long memory) {
+        this.memory = memory;
+    }
+    
+    
     
 }

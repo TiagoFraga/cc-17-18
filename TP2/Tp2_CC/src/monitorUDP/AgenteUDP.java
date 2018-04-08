@@ -7,7 +7,7 @@ package monitorUDP;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
+import com.sun.management.ThreadMXBean;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -32,8 +32,8 @@ public class AgenteUDP implements Runnable {
     private DatagramPacket agenteSendPacket;
     private DatagramPacket agenteReceivePacket;
     private long tempo;
-    
     private long cpu;
+    private long memory;
     
 
     public AgenteUDP(int i, int port, InetAddress multicast) throws SocketException, UnknownHostException {
@@ -45,6 +45,8 @@ public class AgenteUDP implements Runnable {
         this.agenteReceiveData = new byte[1024];
         this.agenteReceiveData = new byte[1024];
         this.tempo = 0;
+        this.cpu = 0;
+        this.memory = 0;
     }
 
     @Override
@@ -69,10 +71,10 @@ public class AgenteUDP implements Runnable {
                     Logger.getLogger(AgenteUDP.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                ThreadMXBean atual = ManagementFactory.getThreadMXBean();
+                ThreadMXBean atual = (ThreadMXBean) ManagementFactory.getThreadMXBean();
                 this.cpu = atual.getThreadCpuTime(Thread.currentThread().getId());
-
-                PDUResponse pduResponse = new PDUResponse (this.id,this.cpu);
+                this.memory = atual.getThreadAllocatedBytes(Thread.currentThread().getId());
+                PDUResponse pduResponse = new PDUResponse (this.id,this.cpu,this.memory);
                 this.agenteSendData = pduResponse.getPDU().getBytes();
                 this.agenteSendPacket = new DatagramPacket(this.agenteSendData,this.agenteSendData.length,this.localhost,this.port);
 

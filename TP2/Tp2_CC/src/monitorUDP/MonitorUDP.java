@@ -14,6 +14,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import tabelaEstado.BackEndServer;
 
 /**
  *
@@ -71,16 +72,40 @@ public class MonitorUDP implements Runnable {
             }
             
             String probe = "probe";
+            System.out.println("panados");
             this.monitorSendData = probe.getBytes();
             this.monitorSendPacket = new DatagramPacket(this.monitorSendData,this.monitorSendData.length);
-            
+            System.out.println("putas");
             try {
                 this.monitorSocket.send(this.monitorSendPacket);
             } catch (IOException ex) {
                 Logger.getLogger(MonitorUDP.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            blablabla
+            int responses=0;
+            while(responses!=this.backEndServers){
+                this.monitorReceivePacket = new DatagramPacket(this.monitorReceiveData, this.monitorReceiveData.length);
+                try {
+                    this.monitorSocket.receive(this.monitorReceivePacket);
+                } catch (IOException ex) {
+                    Logger.getLogger(MonitorUDP.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                String pdu = new String(this.monitorReceivePacket.getData());
+                
+                int porta = this.monitorReceivePacket.getPort();
+                InetAddress endereço = this.monitorReceivePacket.getAddress();
+                String[] values = pdu.split(";");
+                int id = Integer.parseInt(values[0]);
+                long cpu = Long.parseLong(values[1]);
+                long memory = Long.parseLong((values[2]));
+                
+                this.tabela.refresh(id,endereço,porta,cpu,memory);
+                
+                responses++;
+            }
+            
+            System.out.println("ALL THE AGENTS HAVE BEEN ATUALIZED !!!");
             
             
         }

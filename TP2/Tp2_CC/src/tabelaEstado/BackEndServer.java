@@ -16,16 +16,18 @@ public class BackEndServer {
     private int id;
     private InetAddress ip;
     private int porta;
-    private String ram;
+    private long ram;
     private long cpu;
-    private String rtt;
+    private long rtt;
     
 
     public BackEndServer(int i) {
         this.id = i;
-        this.ram = "";
+        this.ip = null;
+        this.porta = 0;
+        this.ram = 0;
         this.cpu = 0;
-        this.rtt = "";
+        this.rtt = 0;
         
     }
 
@@ -53,11 +55,11 @@ public class BackEndServer {
         this.porta = porta;
     }
 
-    public synchronized String getRam() {
+    public synchronized long getRam() {
         return ram;
     }
 
-    public synchronized void setRam(String ram) {
+    public synchronized void setRam(long ram) {
         this.ram = ram;
     }
 
@@ -69,11 +71,11 @@ public class BackEndServer {
         this.cpu = cpu;
     }
 
-    public synchronized String getRtt() {
+    public synchronized long getRtt() {
         return rtt;
     }
 
-    public synchronized void setRtt(String rtt) {
+    public synchronized void setRtt(long rtt) {
         this.rtt = rtt;
     }
     
