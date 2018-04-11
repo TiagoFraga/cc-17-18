@@ -3,37 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package teste;
+package agenteUDP;
 
 /**
  *
  * @author tiagofraga
  */
 public class PDUResponse {
-    private int id;
     private long cpu;
     private long memory;
     
-    public PDUResponse(int id, long cpu, long memory) {
-        this.id = id;
+    public PDUResponse(long cpu, long memory) {
         this.cpu = cpu;
         this.memory = memory;
     }
 
     public String getPDU() {
         StringBuilder s = new StringBuilder();
-        s.append(this.id + ";");
         s.append(this.cpu + ";");
         s.append(this.memory + ";");
         return s.toString();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public long getCpu() {

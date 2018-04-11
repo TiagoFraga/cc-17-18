@@ -12,8 +12,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import tabelaEstado.BackEndServer;
-import tabelaEstado.TabelaEstado;
 
 /**
  *
@@ -21,7 +19,7 @@ import tabelaEstado.TabelaEstado;
  */
 public class MonitorUDP {
     
-    private HashMap<Integer,BackEndServer> tabela;
+    private HashMap<Integer,InfoServidor> tabela;
     private InetAddress multicast;
     private int port;
     private long tempo;
@@ -29,15 +27,15 @@ public class MonitorUDP {
     private MonitorUDP(String string, int porta) throws UnknownHostException {
         this.multicast = InetAddress.getByName(string);
         this.port = porta;
-        this.tabela = new HashMap<Integer,BackEndServer>();
+        this.tabela = new HashMap<Integer,InfoServidor>();
         this.tempo = 0;
     }
 
-    public synchronized HashMap<Integer, BackEndServer> getTabela() {
+    public synchronized HashMap<Integer, InfoServidor> getTabela() {
         return tabela;
     }
 
-    public synchronized void setTabela(HashMap<Integer, BackEndServer> tabela) {
+    public synchronized void setTabela(HashMap<Integer, InfoServidor> tabela) {
         this.tabela = tabela;
     }
 

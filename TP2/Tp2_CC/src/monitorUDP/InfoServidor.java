@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tabelaEstado;
+package monitorUDP;
 
 import java.net.InetAddress;
 
@@ -12,7 +12,7 @@ import java.net.InetAddress;
  * @author tiagofraga
  */
 
-public class BackEndServer {
+public class InfoServidor {
     private int id;
     private InetAddress ip;
     private int porta;
@@ -21,7 +21,7 @@ public class BackEndServer {
     private long rtt;
     
 
-    public BackEndServer(int i) {
+    public InfoServidor(int i) {
         this.id = i;
         this.ip = null;
         this.porta = 0;
