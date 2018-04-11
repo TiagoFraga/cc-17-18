@@ -5,111 +5,96 @@
  */
 package monitorUDP;
 
+import agenteUDP.AgenteUDP;
 import java.io.IOException;
-import tabelaEstado.TabelaEstado;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashMap;
 import tabelaEstado.BackEndServer;
+import tabelaEstado.TabelaEstado;
 
 /**
  *
  * @author tiagofraga
  */
-public class MonitorUDP implements Runnable {
+public class MonitorUDP {
     
-    private int backEndServers;
-    private TabelaEstado tabela;
+    private HashMap<Integer,BackEndServer> tabela;
     private InetAddress multicast;
     private int port;
-    private DatagramSocket monitorSocket;
-    private byte[] monitorReceiveData;
-    private byte[] monitorSendData;
-    private DatagramPacket monitorSendPacket;
-    private DatagramPacket monitorReceivePacket;
     private long tempo;
     
-    
-    public MonitorUDP(int nrAgentesUDP, TabelaEstado tabela) throws UnknownHostException, SocketException {
-        this.backEndServers = nrAgentesUDP;
-        this.tabela = tabela;
-        this.multicast = InetAddress.getByName("239.8.8.8");
-        this.port = 8888;
-        this.monitorSocket = new DatagramSocket(this.port);
-        this.monitorReceiveData = new byte[1024];
-        this.monitorSendData = new byte[1024];
+    private MonitorUDP(String string, int porta) throws UnknownHostException {
+        this.multicast = InetAddress.getByName(string);
+        this.port = porta;
+        this.tabela = new HashMap<Integer,BackEndServer>();
         this.tempo = 0;
     }
 
-    @Override
-    public void run() {
-        System.out.println("MonitorUDP is running !");
-        Thread[] agentesUDP = new Thread [this.backEndServers];
-        for(int i=0;i<this.backEndServers;i++){
-            try {
-                agentesUDP[i] = new Thread (new AgenteUDP(i+1, this.port,this.multicast));
-            } catch (SocketException ex) {
-                Logger.getLogger(MonitorUDP.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(MonitorUDP.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            System.out.println("Loading AgenteUDP"+(i+1)+"...");
-        }
+    public synchronized HashMap<Integer, BackEndServer> getTabela() {
+        return tabela;
+    }
+
+    public synchronized void setTabela(HashMap<Integer, BackEndServer> tabela) {
+        this.tabela = tabela;
+    }
+
+    public synchronized InetAddress getMulticast() {
+        return multicast;
+    }
+
+    public synchronized void setMulticast(InetAddress multicast) {
+        this.multicast = multicast;
+    }
+
+    public synchronized int getPort() {
+        return port;
+    }
+
+    public synchronized void setPort(int port) {
+        this.port = port;
+    }
+
+    public synchronized long getTempo() {
+        return tempo;
+    }
+
+    public synchronized void setTempo(long tempo) {
+        this.tempo = tempo;
+    }
+
+    
+    
+    
+    private void startMonitorUDP() throws InterruptedException {
+        System.out.println("**************** WELCOME UDP MONITOR********************************");
         
-        for(int i=0;i<this.backEndServers; i++){
-            agentesUDP[i].start();
+
+        try (DatagramSocket serverSocket = new DatagramSocket()) {
+            Thread receiver = new Thread( new MonitorUDP_Receiver(this));
+            receiver.start();
+            while(true){
+                String probe = "PROBE";
+                DatagramPacket probePacket = new DatagramPacket(probe.getBytes(),probe.getBytes().length, this.multicast, this.port);
+                serverSocket.send(probePacket);
+                System.out.println("PROBE SENDEND");
+                Thread.sleep(3000);
+                
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-        while(true){
-            this.tempo = this.backEndServers *1000;
-            try {
-                Thread.sleep(this.tempo);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MonitorUDP.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            String probe = "probe";
-            System.out.println("panados");
-            this.monitorSendData = probe.getBytes();
-            this.monitorSendPacket = new DatagramPacket(this.monitorSendData,this.monitorSendData.length);
-            System.out.println("putas");
-            try {
-                this.monitorSocket.send(this.monitorSendPacket);
-            } catch (IOException ex) {
-                Logger.getLogger(MonitorUDP.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            int responses=0;
-            while(responses!=this.backEndServers){
-                this.monitorReceivePacket = new DatagramPacket(this.monitorReceiveData, this.monitorReceiveData.length);
-                try {
-                    this.monitorSocket.receive(this.monitorReceivePacket);
-                } catch (IOException ex) {
-                    Logger.getLogger(MonitorUDP.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-                String pdu = new String(this.monitorReceivePacket.getData());
-                
-                int porta = this.monitorReceivePacket.getPort();
-                InetAddress endereço = this.monitorReceivePacket.getAddress();
-                String[] values = pdu.split(";");
-                int id = Integer.parseInt(values[0]);
-                long cpu = Long.parseLong(values[1]);
-                long memory = Long.parseLong((values[2]));
-                
-                this.tabela.refresh(id,endereço,porta,cpu,memory);
-                
-                responses++;
-            }
-            
-            System.out.println("ALL THE AGENTS HAVE BEEN ATUALIZED !!!");
-            
-            
-        }
-       
     }
     
+     public static void main(String[] args) throws IOException, InterruptedException {
+        System.setProperty("java.net.preferIPv4Stack", "true");
+        MonitorUDP a = new MonitorUDP("239.8.8.8",8888);
+        a.startMonitorUDP();
+       
+    }
+     
+     
+     
 }
