@@ -5,10 +5,9 @@
         <group>
             <file>file:/Users/tiagofraga/Desktop/CC/Trabalhos/Local/TP2/Tp2_CC/src/agenteUDP/AgenteUDP.java</file>
             <file>file:/Users/tiagofraga/Desktop/CC/Trabalhos/Local/TP2/Tp2_CC/src/monitorUDP/MonitorUDP.java</file>
-            <file>file:/Users/tiagofraga/Desktop/CC/Trabalhos/Local/TP2/Tp2_CC/src/tabelaEstado/TabelaEstado.java</file>
             <file>file:/Users/tiagofraga/Desktop/CC/Trabalhos/Local/TP2/Tp2_CC/src/monitorUDP/MonitorUDP_Receiver.java</file>
-            <file>file:/Users/tiagofraga/Desktop/CC/Trabalhos/Local/TP2/Tp2_CC/src/teste/PDUResponse.java</file>
-            <file>file:/Users/tiagofraga/Desktop/CC/Trabalhos/Local/TP2/Tp2_CC/src/tabelaEstado/BackEndServer.java</file>
+            <file>file:/Users/tiagofraga/Desktop/CC/Trabalhos/Local/TP2/Tp2_CC/src/monitorUDP/InfoServidor.java</file>
+            <file>file:/Users/tiagofraga/Desktop/CC/Trabalhos/Local/TP2/Tp2_CC/src/agenteUDP/PDUResponse.java</file>
         </group>
     </open-files>
 </project-private>

@@ -104,7 +104,9 @@ public class AgenteUDP {
                 String frase = "AQUI CRL";
                 sendData = frase.getBytes();
                 
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, this.multicast, this.port);
+                InetAddress endereco = InetAddress.getByName("localhost");
+                
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, endereco, 1234);
                 senderSocket.send(sendPacket);
                 
                 System.out.println("ENVIEI O MONITOR PO CRL !");

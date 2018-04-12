@@ -71,8 +71,10 @@ public class MonitorUDP {
         
 
         try (DatagramSocket serverSocket = new DatagramSocket()) {
+            
             Thread receiver = new Thread( new MonitorUDP_Receiver(this));
             receiver.start();
+            
             while(true){
                 String probe = "PROBE";
                 DatagramPacket probePacket = new DatagramPacket(probe.getBytes(),probe.getBytes().length, this.multicast, this.port);

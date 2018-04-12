@@ -29,7 +29,7 @@ public class MonitorUDP_Receiver implements Runnable {
     public void run() {
         System.out.println("-> CREATED MONITOR LISTENER");
         try {
-            DatagramSocket receiverSocket = new DatagramSocket(this.atual.getPort());
+            DatagramSocket receiverSocket = new DatagramSocket(1234);
             byte[] buffer = new byte[1024];
             
             
