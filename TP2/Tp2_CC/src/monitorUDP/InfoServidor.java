@@ -13,7 +13,6 @@ import java.net.InetAddress;
  */
 
 public class InfoServidor {
-    private int id;
     private InetAddress ip;
     private int porta;
     private long ram;
@@ -21,23 +20,13 @@ public class InfoServidor {
     private long rtt;
     
 
-    public InfoServidor(int i) {
-        this.id = i;
-        this.ip = null;
-        this.porta = 0;
-        this.ram = 0;
-        this.cpu = 0;
-        this.rtt = 0;
-        
+    public InfoServidor(long cpuResponse, long memoryResponse, int port, InetAddress endereco) {
+        this.cpu = cpuResponse;
+        this.ram = memoryResponse;
+        this.porta = port;
+        this.ip = endereco;
     }
-
-    public synchronized int getId() {
-        return id;
-    }
-
-    public synchronized void setId(int id) {
-        this.id = id;
-    }
+    
 
     public synchronized InetAddress getIp() {
         return ip;

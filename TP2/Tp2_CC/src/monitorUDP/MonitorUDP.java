@@ -80,7 +80,8 @@ public class MonitorUDP {
                 DatagramPacket probePacket = new DatagramPacket(probe.getBytes(),probe.getBytes().length, this.multicast, this.port);
                 serverSocket.send(probePacket);
                 System.out.println("PROBE SENDEND");
-                Thread.sleep(3000);
+                Thread.sleep(10000);
+                imprimeTabela();
                 
             }
         } catch (IOException ex) {
@@ -93,6 +94,23 @@ public class MonitorUDP {
         MonitorUDP a = new MonitorUDP("239.8.8.8",8888);
         a.startMonitorUDP();
        
+    }
+
+    private void imprimeTabela() {
+        for(Integer i : this.tabela.keySet()){
+            InfoServidor info = this.tabela.get(i);
+            long cpu = info.getCpu();
+            long ram = info.getRam();
+            InetAddress ip = info.getIp();
+            int porta = info.getPorta();
+            
+            System.out.println("* AgenteUDP nº:"+i);
+            System.out.println("-> CPU:"+cpu);
+            System.out.println("-> RAM:"+ram);
+            System.out.println("-> IP:"+ip);
+            System.out.println("-> PORTA:"+porta);
+            
+        }
     }
      
      

@@ -10,34 +10,45 @@ package agenteUDP;
  * @author tiagofraga
  */
 public class PDUResponse {
+    private int id;
     private long cpu;
     private long memory;
     
-    public PDUResponse(long cpu, long memory) {
+    public PDUResponse(int id,long cpu, long memory) {
+        this.id = id;
         this.cpu = cpu;
         this.memory = memory;
     }
 
     public String getPDU() {
         StringBuilder s = new StringBuilder();
+        s.append(this.id + ";");
         s.append(this.cpu + ";");
         s.append(this.memory + ";");
         return s.toString();
     }
 
-    public long getCpu() {
+    public synchronized int getId() {
+        return id;
+    }
+
+    public synchronized void setId(int id) {
+        this.id = id;
+    }
+    
+    public synchronized long getCpu() {
         return cpu;
     }
 
-    public void setCpu(long cpu) {
+    public synchronized void setCpu(long cpu) {
         this.cpu = cpu;
     }
 
-    public long getMemory() {
+    public synchronized long getMemory() {
         return memory;
     }
 
-    public void setMemory(long memory) {
+    public synchronized void setMemory(long memory) {
         this.memory = memory;
     }
     

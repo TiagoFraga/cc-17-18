@@ -5,12 +5,15 @@
  */
 package agenteUDP;
 
+import com.sun.management.ThreadMXBean;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 /**
  *
@@ -26,6 +29,7 @@ public class AgenteUDP {
     private long memory;
    
     private AgenteUDP(String string, int porta) throws UnknownHostException {
+        this.id = 0;
         this.port = porta;
         this.multicast = InetAddress.getByName(string);
         this.tempo = 0;
@@ -85,7 +89,10 @@ public class AgenteUDP {
     
     private void startAgenteUDP() {
         System.out.println("**************** WELCOME UDP AGENT********************************");
-        
+        Scanner ler = new Scanner(System.in);
+        System.out.println("->Put a number for the Agent Identification: ");
+        this.id = ler.nextInt();
+        System.out.println("WAITING FOR PROBES...");
         byte[] buffer = new byte[1024];
         
         try (MulticastSocket listenerSocket = new MulticastSocket(this.port)){
@@ -101,15 +108,20 @@ public class AgenteUDP {
                 DatagramSocket senderSocket = new DatagramSocket();
                 byte[] sendData = new byte[1024];
                 
-                String frase = "AQUI CRL";
-                sendData = frase.getBytes();
+                ThreadMXBean atual = (ThreadMXBean) ManagementFactory.getThreadMXBean();
+                this.cpu = atual.getThreadCpuTime(Thread.currentThread().getId());
+                this.memory = atual.getThreadAllocatedBytes(Thread.currentThread().getId());
+                PDUResponse pdu = new PDUResponse (this.id,this.cpu,this.memory);
+                
+                String pduResponse = pdu.getPDU();
+                sendData = pduResponse.getBytes();
                 
                 InetAddress endereco = InetAddress.getByName("localhost");
                 
                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, endereco, 1234);
                 senderSocket.send(sendPacket);
                 
-                System.out.println("ENVIEI O MONITOR PO CRL !");
+                System.out.println("SEND PDU RESPONSE TO MONITOR");
                 
             }
         } catch (IOException ex) {

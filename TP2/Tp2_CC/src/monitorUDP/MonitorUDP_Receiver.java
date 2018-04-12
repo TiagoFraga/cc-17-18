@@ -10,6 +10,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,20 +32,30 @@ public class MonitorUDP_Receiver implements Runnable {
         try {
             DatagramSocket receiverSocket = new DatagramSocket(1234);
             byte[] buffer = new byte[1024];
-            
+            HashMap<Integer,InfoServidor> tabela = this.atual.getTabela();
             
             while(true){
                 DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
                 receiverSocket.receive(receivePacket);
                 String msg = new String(receivePacket.getData());
-                System.out.println("RECEIVED: " + msg);
-                
+                String[] campos = msg.split(";");
+                int idResponse = Integer.parseInt(campos[0]);
+                long cpuResponse = Long.parseLong(campos[1]);
+                long memoryResponse = Long.parseLong(campos[2]);
                 InetAddress endereco = receivePacket.getAddress();
-                System.out.println("IPADRRESS: " + endereco);
-                  
                 int port = receivePacket.getPort();
-                System.out.println("PORT : " + port);
-
+                
+                if(tabela.containsKey(idResponse)){
+                    InfoServidor info = tabela.get(idResponse);
+                    info.setCpu(cpuResponse);
+                    info.setRam(memoryResponse);
+                    info.setPorta(port);
+                    info.setIp(endereco);
+                    
+                }else{
+                    InfoServidor info = new InfoServidor(cpuResponse,memoryResponse,port,endereco);
+                    tabela.put(idResponse, info);
+                }
             }
             
        
